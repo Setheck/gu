@@ -106,11 +106,11 @@ func (t *TwoWayCache) Add(key, val interface{}) {
 			t.seen.Store(key, now.Unix())
 
 			return
-		} else {
-			// clean up old value when an existing key is set
-			// this will leave some dangling expiry entries, but they should just fall off after they expire.
-			t.m2.Delete(oldval)
 		}
+
+		// clean up old value when an existing key is set
+		// this will leave some dangling expiry entries, but they should just fall off after they expire.
+		t.m2.Delete(oldval)
 	} else {
 		t.m1.Store(key, val)
 		t.m2.Store(val, key)
