@@ -32,7 +32,6 @@ var GlobalCache = NewCache(time.Minute, defaultExpiryCapacity)
 
 type entry struct {
 	born  time.Time
-	seen  int
 	value interface{}
 }
 

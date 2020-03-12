@@ -16,7 +16,6 @@ func TestRandomString(t *testing.T) {
 		} else {
 			assert.Empty(t, str)
 		}
-		lastValue = str
 	}
 }
 
