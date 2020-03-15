@@ -58,3 +58,27 @@ func TestMarshalWithPretty(t *testing.T) {
 		})
 	}
 }
+
+func TestSamplePercentile(t *testing.T) {
+	var values []int64
+	for i := 0; i < 100; i++ {
+		for j := 1; j <= 10; j++ {
+			values = append(values, int64(j))
+		}
+	}
+
+	values = []int64{}
+	for i := 0; i < 1000; i++ {
+		values = append(values, int64(i))
+	}
+
+	want := []float64{
+		0, 99.10000000000001, 499.5, 599.6, 699.6999999999999, 799.8000000000001,
+		899.9, 949.9499999999999, 999,
+	}
+	got := make([]float64, 0)
+	for _, perc := range []float64{0, 0.1, 0.5, .6, .7, .8, .9, .95, 1} {
+		got = append(got, SamplePercentile(int64Slice(values), perc))
+	}
+	assert.Equal(t, want, got)
+}
