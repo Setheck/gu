@@ -1,16 +1,18 @@
-package gu
+package cache
 
 import (
 	"math/rand"
 	"testing"
 	"time"
 
+	"github.com/Setheck/gu/util"
+
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGlobalCacheTest(t *testing.T) {
-	key := RandomString(10)
-	val := RandomString(10)
+	key := util.RandomString(10)
+	val := util.RandomString(10)
 
 	GlobalCache.Add(key, val)
 
@@ -44,8 +46,8 @@ func TestGlobalCacheTest(t *testing.T) {
 func TestCacheTest(t *testing.T) {
 	cache := NewCache(time.Millisecond*500, 0)
 
-	key := RandomString(10)
-	val := RandomString(10)
+	key := util.RandomString(10)
+	val := util.RandomString(10)
 
 	cache.Add(key, val)
 
@@ -144,18 +146,18 @@ func TestCacheCapacity(t *testing.T) {
 
 	time.Sleep(time.Millisecond * 501)
 
-	cache.Add(RandomString(10), RandomString(10))
+	cache.Add(util.RandomString(10), util.RandomString(10))
 
 	val, _ := cache.GetByKey("key")
 	assert.Equal(t, "val", val)
 
 	for i := 0; i < capacity; i++ {
-		cache.Add(RandomString(10), RandomString(10))
+		cache.Add(util.RandomString(10), util.RandomString(10))
 	}
 
 	time.Sleep(time.Millisecond * 501) // Wait for expire ttl
 
-	cache.Add(RandomString(10), RandomString(10))
+	cache.Add(util.RandomString(10), util.RandomString(10))
 
 	time.Sleep(time.Millisecond * 100) // Need to wait for go expiring go routine to finish
 

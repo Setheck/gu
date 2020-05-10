@@ -1,4 +1,4 @@
-package gu
+package util
 
 // Int32InSlice given a slice of int32 return the index of the value or -1 if not in the slice
 func Int32InSlice(slice []int32, value int32) int {

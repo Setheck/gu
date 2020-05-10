@@ -1,4 +1,4 @@
-package gu
+package cache
 
 import (
 	"reflect"

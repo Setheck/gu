@@ -1,9 +1,10 @@
-package gu
+package util
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestJsonPrettyPrint(t *testing.T) {

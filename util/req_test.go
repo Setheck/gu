@@ -1,11 +1,12 @@
-package gu
+package util
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/url"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMarshalWithPretty(t *testing.T) {

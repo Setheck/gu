@@ -1,4 +1,4 @@
-package gu
+package util
 
 import (
 	"bytes"
