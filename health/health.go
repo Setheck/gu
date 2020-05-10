@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Setheck/gu"
 	"github.com/Setheck/gu/build"
 	"github.com/Setheck/gu/util"
 	"github.com/shirou/gopsutil/cpu"
@@ -157,7 +158,7 @@ func GetHostHealthBytes(now time.Time) []byte {
 type DefaultReporter struct {
 	// Errfn is the callback function that fires whenever there is an error.
 	Errfn func(err error)
-	Producer
+	gu.Producer
 
 	hostname        string
 	service         string
@@ -180,7 +181,7 @@ type DefaultReporter struct {
 var _ Reporter = &DefaultReporter{}
 
 // NewReporter create a new reporter
-func NewReporter(service string, errfn func(err error), producer Producer) *DefaultReporter {
+func NewReporter(service string, errfn func(err error), producer gu.Producer) *DefaultReporter {
 	hn, _ := os.Hostname()
 	info := build.GetInfo(service)
 

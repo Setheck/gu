@@ -26,8 +26,3 @@ type Reporter interface {
 	Stop() error
 	StopWithFinalState(final State, msg string) error
 }
-
-type Producer interface {
-	Produce(message []byte) error
-	ProducerHealth() bool
-}

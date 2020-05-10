@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Setheck/gu/health/mocks"
+	"github.com/Setheck/gu/mocks"
 	"github.com/Setheck/gu/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -86,6 +86,7 @@ func TestOptionalDataField(t *testing.T) {
 
 func TestNewReporter(t *testing.T) {
 	mockProducer := new(mocks.Producer)
+	mockProducer.On("Produce", mock.AnythingOfType("[]uint8")).Return(nil)
 	r := NewReporter("service", func(err error) {}, mockProducer)
 	m := r.Health()
 	h, _ := os.Hostname()
@@ -103,6 +104,7 @@ func TestNewReporter(t *testing.T) {
 
 func TestSetHealth(t *testing.T) {
 	mockProducer := new(mocks.Producer)
+	mockProducer.On("Produce", mock.AnythingOfType("[]uint8")).Return(nil)
 	r := NewReporter("test", func(err error) {}, mockProducer)
 	assert.Equal(t, Blue, r.Health().State)
 	r.SetHealth(Green, "go green!")
@@ -116,6 +118,7 @@ func TestSetHealth(t *testing.T) {
 
 func TestHealthStats(t *testing.T) {
 	mockProducer := new(mocks.Producer)
+	mockProducer.On("Produce", mock.AnythingOfType("[]uint8")).Return(nil)
 	r := NewReporter("test", func(err error) {}, mockProducer)
 
 	// set a stat
@@ -147,6 +150,7 @@ func TestHealthStats(t *testing.T) {
 
 func TestHostnameSuffix(t *testing.T) {
 	mockProducer := new(mocks.Producer)
+	mockProducer.On("Produce", mock.AnythingOfType("[]uint8")).Return(nil)
 	r := NewReporter("test", func(err error) {}, mockProducer)
 
 	suffix := "test.suffix"
@@ -164,6 +168,7 @@ func TestHostnameSuffix(t *testing.T) {
 
 func TestStats(t *testing.T) {
 	mockProducer := new(mocks.Producer)
+	mockProducer.On("Produce", mock.AnythingOfType("[]uint8")).Return(nil)
 	r := NewReporter("test", func(err error) {}, mockProducer)
 
 	h := r.Health()
@@ -192,6 +197,7 @@ func TestHealthHandler(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	mockProducer := new(mocks.Producer)
+	mockProducer.On("Produce", mock.AnythingOfType("[]uint8")).Return(nil)
 	r := NewReporter("test", func(err error) {}, mockProducer)
 
 	handler := http.HandlerFunc(r.HealthHandler)
@@ -219,6 +225,7 @@ func TestHealthHandlerPretty(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	mockProducer := new(mocks.Producer)
+	mockProducer.On("Produce", mock.AnythingOfType("[]uint8")).Return(nil)
 	r := NewReporter("test", func(err error) {}, mockProducer)
 
 	handler := http.HandlerFunc(r.HealthHandler)
@@ -244,13 +251,13 @@ func TestHealthHandlerPretty(t *testing.T) {
 
 func TestReporter_Stop(t *testing.T) {
 	mockProducer := new(mocks.Producer)
-	r := NewReporter("test", func(error) {}, mockProducer)
-	mockProducer.On("Produce", mock.AnythingOfType("*string"), mock.MatchedBy(func(b []uint8) bool {
+	mockProducer.On("Produce", mock.MatchedBy(func(b []uint8) bool {
 		evt := unmarshalEvent(t, b)
 
 		// verify message and state match the default state
 		return evt.Message == "" && evt.State == Gray
 	})).Return(nil)
+	r := NewReporter("test", func(error) {}, mockProducer)
 
 	assert.NoError(t, r.Stop())
 }
@@ -284,6 +291,7 @@ func TestReporter_StopWithFinalState(t *testing.T) {
 func TestPersistentStats(t *testing.T) {
 	errFn := func(error) {}
 	mockProducer := new(mocks.Producer)
+	mockProducer.On("Produce", mock.AnythingOfType("[]uint8")).Return(nil)
 	r := NewReporter("test", errFn, mockProducer)
 	// *note* no need to initialize because we aren't touching kafka
 
@@ -449,21 +457,4 @@ func unmarshalEvent(t *testing.T, b []byte) Event {
 		t.Error(err)
 	}
 	return evt
-}
-
-func TestA(t *testing.T) {
-	errFn := func(err error) { fmt.Println("Reporter Error:", err) }
-	producerMock := new(mocks.Producer)
-	hr := NewReporter("test", errFn, producerMock)
-
-	if err := hr.Initialize(); err != nil {
-		t.Fatal(err)
-	}
-
-	hr.StartIntervalReporting(time.Second)
-
-	<-time.After(time.Minute * 5)
-	if err := hr.Stop(); err != nil {
-		t.Fatal(err)
-	}
 }
